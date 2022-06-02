@@ -4,7 +4,8 @@
   "description": "Wiicket API",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.ts"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,9 @@
   },
   "homepage": "https://github.com/eng-software-rossana/wiicket-api#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "-": "^0.0.1",
+    "express": "^4.18.1",
+    "global": "^4.4.0",
+    "typescript": "^4.7.2"
   }
 }
