@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id  Int @default(autoincrement())
+  user_id String @id @default(uuid())
+  name String
+  login String
+  password String
+  admin Admin?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+}
+
+model Admin {
+  id Int @id @default(autoincrement())
+  admin_id String @unique
+  admin User @relation(fields: [admin_id], references: [user_id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+}
+
+// model Post {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   title     String   @db.VarChar(255)
+//   content   String?
+//   published Boolean  @default(false)
+//   author    User     @relation(fields: [authorId], references: [id])
+//   authorId  Int
+// }
+
+// CREATE TABLE "Admin" (
+//   "id" SERIAL PRIMARY KEY,
+//   "admin_id" int
+// );
+
+// CREATE TABLE "Client" (
+//   "id" SERIAL PRIMARY KEY,
+//   "client_id" int,
+//   "email" varchar
+// );
+
+// CREATE TABLE "Store" (
+//   "id" SERIAL PRIMARY KEY,
+//   "store_id" int,
+//   "store_name" varchar,
+//   "store_description" varchar
+// );
+
+// CREATE TABLE "Product" (
+//   "id" SERIAL PRIMARY KEY,
+//   "product_id" uuid,
+//   "requirements_id" int,
+//   "name" varchar,
+//   "category" varchar,
+//   "description" varchar,
+//   "picture" varchar,
+//   "price" float,
+//   "quantity" int
+// );
+
+// CREATE TABLE "Requirements" (
+//   "id" SERIAL PRIMARY KEY,
+//   "product_id" int,
+//   "requirements" nvarchar
+// );
+
+// CREATE TABLE "Order" (
+//   "id" SERIAL PRIMARY KEY,
+//   "order_id" uuid,
+//   "product_id" int,
+//   "date" datetime,
+//   "client_id" int,
+//   "cost" float,
+//   "status" enum
+// );
+
+// CREATE TABLE "Offer" (
+//   "id" SERIAL PRIMARY KEY,
+//   "offer_id" uuid,
+//   "product_id" int,
+//   "discount" float,
+//   "start" datetime,
+//   "finish" datetime
+// );
+
+// ALTER TABLE "Admin" ADD FOREIGN KEY ("admin_id") REFERENCES "User" ("user_id");
+
+// ALTER TABLE "Client" ADD FOREIGN KEY ("client_id") REFERENCES "User" ("user_id");
+
+// ALTER TABLE "Store" ADD FOREIGN KEY ("store_id") REFERENCES "User" ("user_id");
+
+// ALTER TABLE "Product" ADD FOREIGN KEY ("requirements_id") REFERENCES "Requirements" ("id");
+
+// ALTER TABLE "Requirements" ADD FOREIGN KEY ("product_id") REFERENCES "Product" ("id");
+
+// ALTER TABLE "Product" ADD FOREIGN KEY ("id") REFERENCES "Order" ("product_id");
+
+// ALTER TABLE "Order" ADD FOREIGN KEY ("client_id") REFERENCES "Client" ("id");
+
+// ALTER TABLE "Offer" ADD FOREIGN KEY ("product_id") REFERENCES "Product" ("id");
