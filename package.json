@@ -1,0 +1,26 @@
+{
+  "name": "wiicket-api",
+  "version": "1.0.0",
+  "description": "Wiicket API",
+  "main": "server.ts",
+  "repository": "https://github.com/eng-software-rossana/wiicket-api.git",
+  "author": "Eantropix <eantropixdev@outlook.com>",
+  "scripts": {
+    "build": "tsc --project ./",
+    "start:dev": "nodemon src/server.ts",
+    "start:prod": "node dist/server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^4.0.0",
+    "express": "^4.18.1",
+    "prisma": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.42",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  }
+}

@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  user_id    String    @unique @default(uuid())
+  name       String
+  login      String
+  password   String
+  admin      Admin?
+  client     Client?
+  store      Store?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+model Admin {
+  id         Int       @id @default(autoincrement())
+  admin_id   String    @unique
+  admin      User      @relation(fields: [admin_id], references: [user_id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+model Client {
+  id         Int       @id @default(autoincrement())
+  client_id  String    @unique
+  client     User      @relation(fields: [client_id], references: [user_id])
+  email      String
+  address    String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+model Store {
+  id                Int       @id @default(autoincrement())
+  store_id          String    @unique
+  store             User      @relation(fields: [store_id], references: [user_id])
+  store_name        String
+  store_description String
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  deleted_at        DateTime?
+}
+
+model Product {
+  id              Int            @id @default(autoincrement())
+  product_id      String         @unique
+  requirements_id String         @unique
+  requirements    Requirements?
+  offer           Offer?
+  product_order   ProductOrder[]
+  name            String
+  category        String
+  description     String
+  picture         String
+  price           Float
+  quantity        Int
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  deleted_at      DateTime?
+}
+
+model ProductOrder {
+  id         Int     @id @default(autoincrement())
+  product_id String
+  order_id   String
+  product    Product @relation(fields: [product_id], references: [product_id])
+  order      Order   @relation(fields: [order_id], references: [order_id])
+}
+
+model Requirements {
+  id              Int       @id @default(autoincrement())
+  product_id      String    @unique
+  requirements_id String    @unique
+  product         Product   @relation(fields: [requirements_id], references: [requirements_id])
+  requirements    Json
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  deleted_at      DateTime?
+}
+
+model Order {
+  id            Int            @id @default(autoincrement())
+  order_id      String         @unique
+  product_id    String
+  product_order ProductOrder[]
+  date          DateTime
+  client_id     String
+  cost          Float
+  status        Status         @default(PENDING)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  deleted_at    DateTime?
+}
+
+model Offer {
+  id         Int       @id @default(autoincrement())
+  offer_id   String    @unique
+  product_id String    @unique
+  product    Product   @relation(fields: [product_id], references: [product_id])
+  discount   Float
+  start      DateTime
+  finish     DateTime
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+enum Status {
+  PENDING
+  PROCESSING
+  COMPLETED
+}
