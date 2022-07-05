@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'crypto'
+import { create } from 'domain'
 import { type } from 'os'
+import { response, Response } from 'express'
 
 const prisma = new PrismaClient()
 export class User {
@@ -11,9 +13,7 @@ export class User {
     password: String
 
     async createUser(createUserRequest: String) {
-        console.log(createUserRequest)
         let createUserJson : User = JSON.parse(JSON.stringify(createUserRequest));
-        // let createUserJson = createUserRequest
         const user = await prisma.user.create({
             data: {
                 name: createUserJson.name.toString(),
@@ -22,32 +22,49 @@ export class User {
                 password: createUserJson.password.toString()
             }
         })
-        console.log("user: ", user);
-        console.log("type of user: ", typeof(user));
-        console.log("stringify: ", JSON.stringify(user));
-        console.log("type of stringify: ", typeof(JSON.stringify(user)))
-        return JSON.parse(JSON.stringify(user));
+        return JSON.parse(JSON.stringify(user.user_id));
+    }
+
+    async getUser(userIdRequest: String) {
+        let userId : string = JSON.parse(JSON.stringify(userIdRequest));
+        const user = await prisma.user.findFirst({
+            where: {
+                user_id: userId
+            }
+        });
+        if (user == null) { throw new Error; }
+        return user;
+    }
+
+    async updateUser(updateUserRequest: String) {
+        let updateUserJson : User = JSON.parse(JSON.stringify(updateUserRequest));
+        let foundUser = await this.getUser(updateUserJson.user_id.toString())
+        const user = await prisma.user.update({
+            where: {
+                user_id: updateUserJson.user_id.toString()
+            },
+            data: {
+                name: updateUserJson.name?.toString() ?? foundUser.name,
+                login: updateUserJson.login?.toString() ?? foundUser.login,
+                password: updateUserJson.password?.toString() ?? foundUser.password
+            }
+        })
+        if (user === null) { throw new Error; }
+        return user;
+    }
+
+    async deleteUser(deleteUserRequest: String) {
+        let deleteUserJson : User = JSON.parse(JSON.stringify(deleteUserRequest));
+        let foundUser = await this.getUser(deleteUserJson.user_id.toString())
+        if (foundUser) {
+            const user = await prisma.user.delete({
+                where: {
+                    user_id: foundUser.user_id
+                }
+            })
+            return foundUser.user_id;
+        }
     }
 }
-
-async function getUser(userId: string) {
-    const user = await prisma.user.findUnique({
-        where: {
-            user_id: userId
-        }
-    });
-    if (user == null) { throw new Error; }
-    return user;
-}
-
-
-
-// getUser(userId)
-//     .catch((ex) => {
-//         throw ex
-//     })
-//     .finally(async () => {
-//         await prisma.$disconnect()
-//     })
 
 export default User;
