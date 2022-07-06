@@ -25,8 +25,8 @@ export class User {
         return JSON.parse(JSON.stringify(user.user_id));
     }
 
-    async getUser(userIdRequest: String) {
-        let userId : string = JSON.parse(JSON.stringify(userIdRequest));
+    async getUser(userIdString: String) {
+        let userId : string = JSON.parse(JSON.stringify(userIdString));
         const user = await prisma.user.findFirst({
             where: {
                 user_id: userId
