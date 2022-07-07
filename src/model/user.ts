@@ -5,8 +5,7 @@ import { type } from 'os'
 import { response, Response } from 'express'
 
 const prisma = new PrismaClient()
-export class User {
-    id: Number
+class User {
     user_id: String
     name: String
     login: String
